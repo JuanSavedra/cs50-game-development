@@ -99,7 +99,7 @@ function love.draw()
     player1Y:render()
     -- Right Paddle
     player2Y:render()
-    
+
     -- Ball
     ball:render()
     

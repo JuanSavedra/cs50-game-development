@@ -1,3 +1,4 @@
+Class = require 'libraries.class'
 Ball = Class{}
 
 function Ball:init(x, y, width, height)

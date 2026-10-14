@@ -1,3 +1,4 @@
+Class = require 'libraries.class'
 Paddle = Class{}
 
 function Paddle:init(x, y, width, height)
