@@ -32,6 +32,9 @@ function love.load()
     player1Score = 0
     player2Score = 0
 
+    -- Initialize winning player
+    winningPlayer = 0
+
     -- Paddle positions
     player1 = Paddle(10, 30,5, 20)
     player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
@@ -96,14 +99,32 @@ function love.update(dt)
 
         if ball.x < 0 then
             player2Score = player2Score + 1
-            ball:reset()
-            gameState = 'start'
+
+            if player1Score == 1 then
+                winningPlayer = 1
+                gameState = "done"
+            elseif player2Score == 1 then
+                winningPlayer = 2
+                gameState = "done"
+            else
+                ball:reset()
+                gameState = 'start'
+            end
         end
 
         if ball.x > VIRTUAL_WIDTH then
             player1Score = player1Score + 1
-            ball:reset()
-            gameState = 'start'
+
+            if player1Score == 10 then
+                winningPlayer = 1
+                gameState = "done"
+            elseif player2Score == 10 then
+                winningPlayer = 2
+                gameState = "done"
+            else
+                ball:reset()
+                gameState = 'start'
+            end
         end
 
         ball:update(dt)
@@ -120,6 +141,9 @@ function love.keypressed(key)
         if gameState == 'start' then
             gameState = 'play'
         end
+    elseif key == 'r' then
+        gameState = 'start'
+        love.event.quit('restart')
     end
 end
 
@@ -131,8 +155,11 @@ function love.draw()
 
     if gameState == 'start' then
         love.graphics.printf("Press 'Enter' to Serve!", 0, 20, VIRTUAL_WIDTH, 'center')
-    else
+    elseif gameState == 'play' then
         love.graphics.printf("Good Luck!", 0, 20, VIRTUAL_WIDTH, 'center')
+    else 
+        love.graphics.printf("The Winner is Player " ..tostring(winningPlayer), 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf("Press 'R' to Restart", 0, 40, VIRTUAL_WIDTH, 'center')
     end
 
     love.graphics.setFont(scoreFont)
