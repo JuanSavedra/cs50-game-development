@@ -46,87 +46,12 @@ function love.load()
 end
 
 function love.update(dt)
-    -- Player 1 movement
-    if love.keyboard.isDown('w') then
-        player1.dy  = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
-        player1.dy = PADDLE_SPEED
-    else
-        player1.dy = 0
-    end
-
-    -- Player 2 movement
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
-    else
-        player2.dy = 0
-    end
+    playerOneMovement()
+    playerTwoMovement()
 
     if gameState == 'play' then
-        if ball:collides(player1) then
-            ball.dx = -ball.dx * 1.03
-            ball.x = player1.x + 5
-
-            if ball.dy < 0 then
-                ball.dy = -math.random(10, 150)
-            else
-                ball.dy = math.random(10, 150)
-            end
-        end
-
-        if ball:collides(player2) then
-            ball.dx = -ball.dx * 1.03
-            ball.x = player2.x - 4
-
-            if ball.dy < 0 then
-                ball.dy = -math.random(10, 150)
-            else
-                ball.dy = math.random(10, 150)
-            end
-        end
-
-        if ball.y <= 0 then
-            ball.y = 0
-            ball.dy = -ball.dy
-        end
-
-        if ball.y >= VIRTUAL_HEIGHT - 4 then
-            ball.y = VIRTUAL_HEIGHT - 4
-            ball.dy = -ball.dy
-        end
-
-        if ball.x < 0 then
-            player2Score = player2Score + 1
-
-            if player1Score == 1 then
-                winningPlayer = 1
-                gameState = "done"
-            elseif player2Score == 1 then
-                winningPlayer = 2
-                gameState = "done"
-            else
-                ball:reset()
-                gameState = 'start'
-            end
-        end
-
-        if ball.x > VIRTUAL_WIDTH then
-            player1Score = player1Score + 1
-
-            if player1Score == 10 then
-                winningPlayer = 1
-                gameState = "done"
-            elseif player2Score == 10 then
-                winningPlayer = 2
-                gameState = "done"
-            else
-                ball:reset()
-                gameState = 'start'
-            end
-        end
-
+        ballCollision()
+        gameScore()
         ball:update(dt)
     end
 
@@ -183,4 +108,85 @@ function displayFPS()
     love.graphics.setFont(smallFont)
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
+
+function playerOneMovement()
+    -- Player 1 movement
+    if love.keyboard.isDown('w') then
+        player1.dy  = -PADDLE_SPEED
+    elseif love.keyboard.isDown('s') then
+        player1.dy = PADDLE_SPEED
+    else
+        player1.dy = 0
+    end
+end
+
+function playerTwoMovement()
+    -- Player 2 movement
+    if love.keyboard.isDown('up') then
+        player2.dy = -PADDLE_SPEED
+    elseif love.keyboard.isDown('down') then
+        player2.dy = PADDLE_SPEED
+    else
+        player2.dy = 0
+    end
+end
+
+function ballCollision()
+    if ball:collides(player1) then
+        ball.dx = -ball.dx * 1.03
+        ball.x = player1.x + 5
+
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10, 150)
+        end
+    end
+
+    if ball:collides(player2) then
+        ball.dx = -ball.dx * 1.03
+        ball.x = player2.x - 4
+
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10, 150)
+        end
+    end
+
+    if ball.y <= 0 then
+        ball.y = 0
+        ball.dy = -ball.dy
+    end
+
+    if ball.y >= VIRTUAL_HEIGHT - 4 then
+        ball.y = VIRTUAL_HEIGHT - 4
+        ball.dy = -ball.dy
+    end
+end
+
+function gameScore()
+    if ball.x < 0 then
+        player2Score = player2Score + 1
+        checkWinner()
+    end
+
+    if ball.x > VIRTUAL_WIDTH then
+        player1Score = player1Score + 1
+        checkWinner()
+    end
+end
+
+function checkWinner()
+    if player1Score == 10 then
+        winningPlayer = 1
+        gameState = "done"
+    elseif player2Score == 10 then
+        winningPlayer = 2
+        gameState = "done"
+    else
+        ball:reset()
+        gameState = 'start'
+    end
 end
