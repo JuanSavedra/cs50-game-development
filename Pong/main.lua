@@ -33,8 +33,8 @@ function love.load()
     player2Score = 0
 
     -- Paddle positions
-    player1Y = Paddle(10, 30,5, 20)
-    player2Y = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
+    player1 = Paddle(10, 30,5, 20)
+    player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
 
     -- Ball position
     ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
@@ -43,28 +43,62 @@ function love.load()
 end
 
 function love.update(dt)
+    -- Player 1 movement
     if love.keyboard.isDown('w') then
-        player1Y.dy  = -PADDLE_SPEED
+        player1.dy  = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
-        player1Y.dy = PADDLE_SPEED
+        player1.dy = PADDLE_SPEED
     else
-        player1Y.dy = 0
+        player1.dy = 0
     end
 
+    -- Player 2 movement
     if love.keyboard.isDown('up') then
-        player2Y.dy = -PADDLE_SPEED
+        player2.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('down') then
-        player2Y.dy = PADDLE_SPEED
+        player2.dy = PADDLE_SPEED
     else
-        player2Y.dy = 0
+        player2.dy = 0
     end
 
     if gameState == 'play' then
+        if ball:collides(player1) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player1.x + 5
+
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+
+        if ball:collides(player2) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player2.x - 4
+
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+        end
+
+        if ball.y >= VIRTUAL_HEIGHT - 4 then
+            ball.y = VIRTUAL_HEIGHT - 4
+            ball.dy = -ball.dy
+        end
+
         ball:update(dt)
     end
 
-    player1Y:update(dt)
-    player2Y:update(dt)
+    player1:update(dt)
+    player2:update(dt)
 end
 
 function love.keypressed(key)
@@ -97,9 +131,9 @@ function love.draw()
     love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 
     -- Left Paddle
-    player1Y:render()
+    player1:render()
     -- Right Paddle
-    player2Y:render()
+    player2:render()
 
     -- Ball
     ball:render()
