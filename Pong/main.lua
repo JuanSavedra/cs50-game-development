@@ -119,9 +119,6 @@ function love.keypressed(key)
     elseif key == 'enter' or key == 'return' then
         if gameState == 'start' then
             gameState = 'play'
-        else
-            gameState = 'start'
-            ball:reset()
         end
     end
 end
@@ -133,9 +130,9 @@ function love.draw()
     love.graphics.setFont(smallFont)
 
     if gameState == 'start' then
-        love.graphics.printf('Hello Start State!', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf("Press 'Enter' to Serve!", 0, 20, VIRTUAL_WIDTH, 'center')
     else
-        love.graphics.printf('Hello Play State!', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf("Good Luck!", 0, 20, VIRTUAL_WIDTH, 'center')
     end
 
     love.graphics.setFont(scoreFont)
