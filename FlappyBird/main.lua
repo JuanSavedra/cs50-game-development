@@ -1,4 +1,5 @@
 local push = require 'libraries.push'
+require 'entities.bird'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -17,6 +18,8 @@ function love.load()
 
     background = love.graphics.newImage('images/background.png')
     ground = love.graphics.newImage('images/ground.png')
+
+    bird = Bird()
 
     love.window.setTitle('Flappy Bird')
 
@@ -45,6 +48,8 @@ function love.draw()
 
     love.graphics.draw(background, -backgroundScroll, 0)
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT - 16)
+
+    bird:render()
 
     push.finish()
 end
